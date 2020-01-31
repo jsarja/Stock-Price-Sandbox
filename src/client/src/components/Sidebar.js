@@ -44,7 +44,7 @@ class Sidebar extends React.Component {
             {this.props.routes.map((prop, key) => {
               let header = null;
               if(prop.header) {
-                header = <div className="ml-2 m-2 text-secondary">{prop.header}</div>
+                header = <div className="ml-2 mt-3 mb-2 text-secondary">{prop.header}</div>
               }
               return ( <div key={key}>
                 {header}
