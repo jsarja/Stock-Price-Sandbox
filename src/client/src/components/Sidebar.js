@@ -31,7 +31,22 @@ class Sidebar extends React.Component {
     return window.location.href.indexOf(routeName) > -1 ? "active" : "";
   }
 
+  componentDidMount() {
+    if(window.location.href.includes('sign-')) {
+      this.mainPanelWidth = document.querySelector(".main-panel").style.width;
+      document.querySelector(".main-panel").style.width = "100%";
+    }
+  }
+
+  componentWillUnmount() {
+    document.querySelector(".main-panel").style.width = "calc(100% - 260px)";
+  }
+
   render() {
+    // Dont show sidebar on sign-in and sign-up pages.
+    if(window.location.href.includes('sign-')) {
+      return null;
+    }
     return (
       <div
         className="sidebar"
@@ -42,6 +57,9 @@ class Sidebar extends React.Component {
         <div className="sidebar-wrapper" ref={this.sidebar}>
           <Nav className="">
             {this.props.routes.map((prop, key) => {
+              if(prop.path.includes('sign-')) {
+                return;
+              }
               let header = null;
               if(prop.header) {
                 header = <div className="ml-2 mt-3 mb-2 text-secondary">{prop.header}</div>

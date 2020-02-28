@@ -17,6 +17,7 @@
 
 */
 import React from "react";
+import ReactDOM from "react-dom";
 import { withRouter } from 'react-router-dom';
 import {
   Navbar,
@@ -85,6 +86,11 @@ class Header extends React.Component {
   }
   
   render() {
+    // Dont show header bar on sign-in and sign-up pages.
+    if(window.location.href.includes('sign-')) {
+      return null;
+    }
+
     return (
       // add or remove classes depending if we are on full-screen-maps page or not
       <Navbar

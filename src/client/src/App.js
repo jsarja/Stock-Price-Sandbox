@@ -27,10 +27,12 @@ class App extends React.Component {
           />
           <div className="main-panel" ref={this.mainPanel}>
             <Header {...this.props}/>
-            <Switch>
-              {routeComponents}
-              <Redirect to="/dashboard" />
-            </Switch>
+            <div className="content">
+              <Switch>
+                {routeComponents}
+                <Redirect to="/dashboard" />
+              </Switch>
+            </div>
           </div>
         </div>
       </Router>

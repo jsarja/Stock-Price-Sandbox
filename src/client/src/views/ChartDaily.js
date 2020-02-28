@@ -5,7 +5,6 @@ class ChartDaily extends React.Component {
 	render() {
 		return (
 			<>
-			  <div className="content">
 				<Row>
 				  <Col lg={{size: 10, offset: 1}} md="12">
 					<Card className="card-stats">
@@ -41,7 +40,6 @@ class ChartDaily extends React.Component {
 					</Card>
 				  </Col>
 				</Row>
-			  </div>
 			</>
 		  );
 	}
