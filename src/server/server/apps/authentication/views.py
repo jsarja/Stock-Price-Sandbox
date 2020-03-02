@@ -11,6 +11,7 @@ from .serializers import SignUpSerializer
 def sign_up(request):
     serializer = SignUpSerializer(data=request.data)
     data = {}
+    req_status = status.HTTP_201_CREATED
     if serializer.is_valid():
         user = serializer.save()
         data['response'] = "Successfully reqistered a new user."
@@ -18,4 +19,5 @@ def sign_up(request):
         data['token'] = Token.objects.get(user=user).key
     else:
         data = serializer.errors
-    return Response(data)
+        req_status = status.HTTP_400_BAD_REQUEST
+    return Response(data, status=req_status)
