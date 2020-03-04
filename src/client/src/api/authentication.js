@@ -5,10 +5,10 @@ export const signIn = async (userData) => {
         {
             method: 'POST',
             body: JSON.stringify(userData),
-            // headers:{
-            //     'Content-Type': 'application/json',
-            //     'Authorization': googleId
-            // }
+            headers:{
+                'Content-Type': 'application/json',
+                //'Authorization': googleId
+            }
         }
     );
     return response;
