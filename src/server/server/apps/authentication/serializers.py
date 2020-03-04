@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import User
+
+from .models import User, APIUser
 
 class SignUpSerializer(serializers.ModelSerializer):
     passwordCheck = serializers.CharField(style={'input_type': 'password'}, write_only=True)
@@ -22,5 +23,14 @@ class SignUpSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'password': 'Passwords must match'})
         
         user.set_password(pass1)
+
         user.save()
+
+        apiuser = APIUser(user=user)
+        apiuser.save()
+
         return user
+
+class SignInSerializer(serializers.Serializer):
+    username = serializers.CharField(required = True)
+    password = serializers.CharField(required = True)

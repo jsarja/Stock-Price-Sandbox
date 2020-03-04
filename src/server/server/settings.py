@@ -65,11 +65,13 @@ ROOT_URLCONF = 'server.urls'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+        'server.apps.authentication.tokens.ExpiringTokenAuthentication',
     ),
     # 'DEFAULT_PERMISSION_CLASSES': (
     #     'rest_framework.permissions.IsAuthenticated', )
 }
+
+TOKEN_EXPIRED_AFTER_SECONDS = 604800 # = 7 days
 
 TEMPLATES = [
     {
