@@ -58,7 +58,7 @@ class Sidebar extends React.Component {
           <Nav className="">
             {this.props.routes.map((prop, key) => {
               if(prop.path.includes('sign-')) {
-                return;
+                return null;
               }
               let header = null;
               if(prop.header) {
