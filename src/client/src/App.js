@@ -1,14 +1,12 @@
 import React from 'react';
 import { Router, Route, Switch, Redirect } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
 import "bootstrap/dist/css/bootstrap.css";
 
+import history from './history';
 import routes from './routes';
 import './assets/css/paper-dashboard.min.css';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-
-const history = createBrowserHistory();
 
 const routeComponents = routes.map(route => {
   return <Route path={route.path} exact component={route.component} key={route.title}/>
