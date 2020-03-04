@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { signIn } from '../../api/authentication';
 
-export default class Login extends Component {
+export default class SignIn extends Component {
   constructor(props) {
     super(props);
     this.state = { username: '', password: '', userError: '', passError: '',
@@ -30,6 +30,7 @@ export default class Login extends Component {
         const passError = 'password' in returnData ? returnData['password'] : '';
         const otherError = 'non_field_errors' in returnData ? returnData['non_field_errors'] : '';
         this.setState({userError, passError, otherError });
+        console.log(returnData)
     }
 }
 

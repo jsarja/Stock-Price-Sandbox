@@ -1,7 +1,7 @@
 import Dashboard from './views/Dashboard';
 import ChartDaily from './views/ChartDaily';
 import ChartLongterm from './views/ChartLongterm';
-import Login from './views/auth/Login';
+import SignIn from './views/auth/SignIn';
 import SignUp from './views/auth/SignUp';
 
 const routes = [
@@ -25,7 +25,7 @@ const routes = [
 	{
 		path: "/sign-in",
 		title: "Sign In",
-		component: Login,
+		component: SignIn,
 	},
 	{
 		path: "/sign-up",
