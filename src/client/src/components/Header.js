@@ -23,6 +23,8 @@ import {
   NavbarBrand,
   Container,
 } from "reactstrap";
+import { removeAuthToken } from '../utils/AuthTokenStore';
+import history from '../history';
 
 
 class Header extends React.Component {
@@ -83,6 +85,11 @@ class Header extends React.Component {
       this.sidebarToggle.current.classList.toggle("toggled");
     }
   }
+
+  logOut() {
+    removeAuthToken();
+    history.push('sign-in');
+  }
   
   render() {
     // Dont show header bar on sign-in and sign-up pages.
@@ -115,7 +122,14 @@ class Header extends React.Component {
             </div>
             <NavbarBrand className="mx-auto" href="/">Stock Market Sandbox</NavbarBrand>
 
-
+            <button
+                type="button "
+                ref={this.sidebarToggle}
+                className="btn btn-danger"
+                onClick={this.logOut}
+            >
+              Log Out
+            </button>
         </Container>
       </Navbar>
     );
