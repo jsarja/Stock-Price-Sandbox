@@ -18,11 +18,13 @@ def sign_up(request):
         user = serializer.save()
         data['response'] = "Successfully reqistered a new user."
         data['username'] = user.username
-        data['token'] = Token.objects.get(user=user).key
+        token, _ = Token.objects.get_or_create(user = user)
+        _, token = get_token(token)
+        data['expiresIn'] = expires_in(token)
+        data['token'] = token.key
     else:
         data = serializer.errors
         req_status = status.HTTP_400_BAD_REQUEST
-    print(data)
     return Response(data, status=req_status)
 
 @api_view(['POST', ])
@@ -31,7 +33,6 @@ def sign_in(request):
     data = {}
     req_status = status.HTTP_200_OK
     if serializer.is_valid():
-        print(serializer.validated_data)
         user = authenticate(
             username = serializer.validated_data['username'],
             password = serializer.validated_data['password'] 

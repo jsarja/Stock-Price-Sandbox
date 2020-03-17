@@ -8,7 +8,7 @@ from rest_framework.authtoken.models import Token
 
 class APIUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    test_field = models.CharField(max_length=100, null=True)
+    alpha_vantage_api_key = models.CharField(max_length=100, null=True)
 
 # Create new token for user every time new APIUser is created.
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
