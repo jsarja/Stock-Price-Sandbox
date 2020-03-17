@@ -7,6 +7,7 @@ import routes from './routes';
 import './assets/css/paper-dashboard.min.css';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
+import { validAuthTokenExists } from './utils/AuthTokenStore';
 
 const routeComponents = routes.map(route => {
   return <Route path={route.path} exact component={route.component} key={route.title}/>
@@ -16,8 +17,13 @@ class App extends React.Component {
   mainPanel = React.createRef();
 
   render() {
+    if(!validAuthTokenExists()) {
+			setTimeout(() => history.push('/sign-up'), 10);
+    }
+    
     return (
       <Router history={history} >
+        
         <div className="wrapper">
           <Sidebar
             {...this.props}

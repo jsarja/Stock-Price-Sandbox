@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import { signUp } from '../../api/authentication';
+import { saveAuthToken } from '../../utils/AuthTokenStore';
+import history from '../../history';
 
 export default class SignUp extends Component {
     constructor(props) {
         super(props);
-        this.state = { username: '', password: '', passwordCheck: '', 
+        this.state = { username: '', avKey: '', password: '', passwordCheck: '', 
             userError: '', passError: '', passCheckErr: '' };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.formSubmit = this.formSubmit.bind(this);
@@ -19,18 +21,19 @@ export default class SignUp extends Component {
     formSubmit = async (e) => {
         e.preventDefault();
         this.setState({userError: '', passError: '', passCheckErr: '' })
-        const {username, password, passwordCheck} = this.state;
-        const result = await signUp({username, password, passwordCheck});
+        const {username, avKey, password, passwordCheck} = this.state;
+        const result = await signUp({username, 'alpha_vantage_api_key': avKey, 
+            password, 'password_check': passwordCheck});
         const returnData = await result.json();
-        if(result.status == 201) {
-
+        if(result.status === 201) {
+            saveAuthToken(returnData);
+            history.push('/dashboard');
         }
         else {
             const userError = 'username' in returnData ? returnData['username']  : '';
             const passError = 'password' in returnData ? returnData['password'] : '';
             const passCheckErr = 'passwordCheck' in returnData ? returnData['passwordCheck'] : '';
             this.setState({userError, passError, passCheckErr });
-            console.log(returnData);
         }
     }
 
@@ -54,8 +57,27 @@ export default class SignUp extends Component {
 
                                     />
                                 </div>
-                                <p className="text-danger font-weight-bold text-uppercase"
-                                    >{this.state.userError}
+                                <p className="text-danger font-weight-bold text-uppercase">
+                                    {this.state.userError}
+                                </p>
+
+                                <div className="form-group">
+                                    <label>Alpha Vantage API Key:</label>
+                                    <input 
+                                        name="avKey"
+                                        value={this.state.avKey}
+                                        onChange={this.handleInputChange}
+                                        type="text" 
+                                        className="form-control" 
+
+                                    />
+                                </div>
+                                <p className="text-muted">
+                                    You need an Alpha Vantage API Key to use this application.  
+                                    Claim your free API Key 
+                                    from <a target="_blank" rel="noopener noreferrer" 
+                                    href="https://www.alphavantage.co/support/#api-key"> 
+                                    Alpha Vantage's Site</a>
                                 </p>
 
                                 <div className="form-group">

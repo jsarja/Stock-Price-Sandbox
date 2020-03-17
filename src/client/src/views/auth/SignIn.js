@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import { signIn } from '../../api/authentication';
+import { saveAuthToken } from '../../utils/AuthTokenStore';
+import history from '../../history';
 
 export default class SignIn extends Component {
   constructor(props) {
@@ -23,7 +25,8 @@ export default class SignIn extends Component {
     const result = await signIn({username, password});
     const returnData = await result.json();
     if(result.status === 200) {
-      console.log(returnData);
+      saveAuthToken(returnData);
+      history.push('/dashboard');
     }
     else {
         const userError = 'username' in returnData ? returnData['username']  : '';
