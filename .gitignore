@@ -19,4 +19,4 @@ env.bak/
 venv.bak/
 
 node_modules/
-*.sqlite3
+src/server/stock_price_sandbox_db.sqlite3
