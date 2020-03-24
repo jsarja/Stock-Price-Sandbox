@@ -2,7 +2,8 @@ import abc
 from alpha_vantage.timeseries import TimeSeries
 from requests.exceptions import ConnectionError
 
-from helpers import DateHelpers
+from .helpers import DateHelpers
+from .errors import InvalidStockNameError, NoInternetConnectionError
 
 
 class IDataService(abc.ABC):
@@ -35,12 +36,11 @@ class AlphaVantageDataService(IDataService):
                 symbol=stock, interval='1min', outputsize="full"
             )
         except ValueError:
-            # TODO: Raise invalid stock name error
-            return
+            raise InvalidStockNameError
         except ConnectionError:
-            # TODO: Raise NoInternetConnectionError
-            return
+            raise NoInternetConnectionError
         
+        # TODO, jos käyttänyt yli 5 kertaa minuutissa APIta
         # Get only the data points that are from the latest day.
         all_dates = list(stock_data.keys())
         i = 0
@@ -49,7 +49,7 @@ class AlphaVantageDataService(IDataService):
         dates = all_dates[:i]
         dates.reverse()
 
-        prices = [stock_data[date]["4. close"] for date in dates]
+        prices = [float(stock_data[date]["4. close"]) for date in dates]
 
         return {"prices": prices, "dates": dates}
 
@@ -64,11 +64,10 @@ class AlphaVantageDataService(IDataService):
                 symbol=stock, outputsize="full"
             )
         except ValueError:
-            # TODO: Raise invalid stock name error
-            return
+            raise InvalidStockNameError
         except ConnectionError:
-            # TODO: Raise NoInternetConnectionError
-            return
+            raise NoInternetConnectionError
+
         # TODO, jos käyttänyt yli 5 kertaa minuutissa APIta
         all_dates = list(stock_data.keys())
         all_dates.reverse()
