@@ -37,49 +37,59 @@ def search_stock(request):
     }
     return Response(content)
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def stock_data_latest_daily(request):
     # Validate user's query parameters.
-    stock, error = ValidationHelpers.validate_latest_daily_request_data(request.GET)
-
+    stock, error = ValidationHelpers.validate_latest_daily_request_data(request.data)
     # If query params were not valid return error message and 400 status code.
     if error:
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+    plot_options = request.data["plot_options"] if "plot_options" in request.data else []
     
     # Get data wanted from data manager and handle possible Errors.
     search_params = {"stock": stock}
     try:
-        content = DataManager().construct_data("latest-daily", search_params, request)
+        content = DataManager().construct_data(
+            "latest-daily", search_params, request, plot_options)
     except InvalidStockNameError:
         return Response("Please provide a valid abbreviation of a stock", \
             status=status.HTTP_400_BAD_REQUEST)
     except NoInternetConnectionError:
         return Response("Could not connect to Alpha Vantage API (no internet connection)", \
             status=status.HTTP_503_SERVICE_UNAVAILABLE)
+    except InvalidPlotOptionParameter:
+        return Response("Please provide all the plot option parameter values as integers.", \
+            status=status.HTTP_400_BAD_REQUEST)
 
     return Response(content)
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def stock_data_long_term(request):
     # Validate user's query parameters.
     stock, start_date, end_date, error = \
-        ValidationHelpers.validate_long_term_request_data(request.GET)
+        ValidationHelpers.validate_long_term_request_data(request.data)
 
     # If query params were not valid return error message and 400 status code.
     if error:
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+    plot_options = request.data["plot_options"] if "plot_options" in request.data else []
     
     # Get data wanted from data manager and handle possible Errors.
     search_params = {"stock": stock, "start_date": start_date, "end_date": end_date}
     try:
-        content = DataManager().construct_data("long-term", search_params, request)
+        content = DataManager().construct_data("long-term", search_params, request, plot_options)
     except InvalidStockNameError:
-        return Response("Please provide a valid abbreviation of a stock", \
+        return Response("Please provide a valid abbreviation of a stock.", \
             status=status.HTTP_400_BAD_REQUEST)
     except NoInternetConnectionError:
-        return Response("Could not connect to Alpha Vantage API (no internet connection)", \
+        return Response("Could not connect to Alpha Vantage API (no internet connection).", \
             status=status.HTTP_503_SERVICE_UNAVAILABLE)
+    except InvalidPlotOptionParameter:
+        return Response("Please provide all the plot option parameter values as integers.", \
+            status=status.HTTP_400_BAD_REQUEST)
 
     return Response(content)
