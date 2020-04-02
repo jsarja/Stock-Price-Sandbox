@@ -18,8 +18,12 @@ class App extends React.Component {
 
   render() {
     if(!validAuthTokenExists()) {
-			setTimeout(() => history.push('/sign-up'), 10);
+      setTimeout(() => {
+        history.push('/sign-in');
+      }, 10);
     }
+
+
     
     return (
       <Router history={history} >

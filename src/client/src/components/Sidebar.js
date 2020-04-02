@@ -19,6 +19,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { Nav } from "reactstrap";
+import history from '../history';
 
 class Sidebar extends React.Component {
   constructor(props) {
@@ -36,10 +37,25 @@ class Sidebar extends React.Component {
       this.mainPanelWidth = document.querySelector(".main-panel").style.width;
       document.querySelector(".main-panel").style.width = "100%";
     }
+    else {
+      document.querySelector(".main-panel").style.width = "calc(100% - 260px)";
+    }
+
+    this.unListenHistory = history.listen(() => {
+      if(window.location.href.includes('sign-')) {
+        this.mainPanelWidth = document.querySelector(".main-panel").style.width;
+        document.querySelector(".main-panel").style.width = "100%";
+      }
+      else {
+        document.querySelector(".main-panel").style.width = "calc(100% - 260px)";
+      }
+      this.forceUpdate();
+    })
   }
 
   componentWillUnmount() {
     document.querySelector(".main-panel").style.width = "calc(100% - 260px)";
+    this.unListenHistory();
   }
 
   render() {
