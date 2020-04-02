@@ -1,4 +1,4 @@
-import Dashboard from './views/Dashboard';
+import UserProfile from './views/UserProfile';
 import ChartDaily from './views/ChartDaily';
 import ChartLongterm from './views/ChartLongterm';
 import SignIn from './views/auth/SignIn';
@@ -6,10 +6,10 @@ import SignUp from './views/auth/SignUp';
 
 const routes = [
 	{
-		path: "/dashboard",
-		title: "Dashboard",
-		component: Dashboard,
-		header: "OVERVIEW"
+		path: "/profile",
+		title: "Profile",
+		component: UserProfile,
+		header: "USER"
 	},
 	{
 		path: "/stock-charts/daily",
