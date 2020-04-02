@@ -89,7 +89,7 @@ class AlphaVantageDataService(IDataService):
                 break
 
         dates = all_dates[start_index:end_index+1]
-        prices = [stock_data[date]["4. close"] for date in dates]
+        prices = [float(stock_data[date]["4. close"]) for date in dates]
         return {"prices": prices, "dates": dates}
 
 

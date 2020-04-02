@@ -27,7 +27,7 @@ class ValidationHelpers:
     def validate_long_term_request_data(data):
         if ("stock" not in data) or ("start_date" not in data) or ("end_date" not in data):
             return None, None, None, \
-                "Please provide 'stock', 'start_date' and 'end_date query parameters in the request."
+                "Please provide 'stock', 'start_date' and 'end_date in the request body."
 
         start_valid = ValidationHelpers.validate_date(data["start_date"])
         end_valid = ValidationHelpers.validate_date(data["end_date"])
@@ -40,7 +40,7 @@ class ValidationHelpers:
     @staticmethod
     def validate_latest_daily_request_data(data):
         if "stock" not in data:
-            return None, "Please provide 'stock' query parameter in the request."
+            return None, "Please provide stock's name in the request body."
         return data["stock"], None
     
     @staticmethod
