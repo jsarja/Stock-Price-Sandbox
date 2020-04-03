@@ -13,7 +13,7 @@ const routes = [
 	},
 	{
 		path: "/stock-charts/daily",
-		title: "Daily",
+		title: "Latest Daily",
 		component: ChartDaily,
 		header: "STOCK CHARTS"
 	},
