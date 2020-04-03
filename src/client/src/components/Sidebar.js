@@ -34,16 +34,17 @@ class Sidebar extends React.Component {
 
   componentDidMount() {
     if(window.location.href.includes('sign-')) {
-      this.mainPanelWidth = document.querySelector(".main-panel").style.width;
+      if(document.documentElement.classList.contains("nav-open")) {
+        document.documentElement.classList.remove("nav-open");
+      }
       document.querySelector(".main-panel").style.width = "100%";
-    }
-    else {
-      document.querySelector(".main-panel").style.width = "calc(100% - 260px)";
     }
 
     this.unListenHistory = history.listen(() => {
       if(window.location.href.includes('sign-')) {
-        this.mainPanelWidth = document.querySelector(".main-panel").style.width;
+        if(document.documentElement.classList.contains("nav-open")) {
+          document.documentElement.classList.remove("nav-open");
+        }
         document.querySelector(".main-panel").style.width = "100%";
       }
       else {
