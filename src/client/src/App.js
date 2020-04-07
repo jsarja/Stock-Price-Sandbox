@@ -19,7 +19,7 @@ class App extends React.Component {
   render() {
     if(!validAuthTokenExists()) {
       setTimeout(() => {
-        history.push('/sign-in');
+        history.push('/sign-up');
       }, 10);
     }
 
@@ -38,7 +38,7 @@ class App extends React.Component {
             <div className="content">
               <Switch>
                 {routeComponents}
-                <Redirect to="/dashboard" />
+                <Redirect to="/profile" />
               </Switch>
             </div>
           </div>

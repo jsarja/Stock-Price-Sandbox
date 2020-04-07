@@ -1,12 +1,15 @@
 import React from 'react';
 import { Card, CardHeader, CardBody, CardTitle, Row, Col } from "reactstrap";
 import { getLongTerm } from '../api/stockdata';
+import Plotter from '../components/Plotter';
 
 class ChartLongterm extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			stockSymbol: "",
+			startDate: this.formatDate(new Date()),
+			endDate: this.formatDate(new Date()),
 			averageCheck: false,
 			averageMovingCheck: false,
 			averageMovingWindow: 10,
@@ -26,16 +29,14 @@ class ChartLongterm extends React.Component {
 			maxMovingCheck: false,
 			maxMovingWindow: 10,
 			maxMovingLimit: "",
-			serverError: null
+			serverError: null,
+			plotData: null
 		};
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleStockSymbolChange = this.handleStockSymbolChange.bind(this);
 		this.handleCheckBoxChange = this.handleCheckBoxChange.bind(this);
 		this.formSubmit = this.formSubmit.bind(this);
 	}
-
-	
-	
 
 	handleInputChange(event) {
         this.setState({ [event.target.name]: event.target.value});
@@ -52,6 +53,7 @@ class ChartLongterm extends React.Component {
 
 	async formSubmit(e) {
 		e.preventDefault();
+		this.setState({ serverError: null })
 
 		const formMapper = {
 			"averageCheck": {"name": "average"},
@@ -96,6 +98,9 @@ class ChartLongterm extends React.Component {
 					if (!formData.params[key]) {
 					  	delete formData.params[key];
 					}
+					else {
+						formData.params[key] = parseInt(formData.params[key])
+					}
 				}
 				plotOptions.push(formData);
 			}
@@ -103,18 +108,63 @@ class ChartLongterm extends React.Component {
 		
 		const requestData = {
 			"stock": this.state.stockSymbol,
+			"start_date": this.state.startDate,
+			"end_date": this.state.endDate,
 			"plot_options": plotOptions
 		};
 
 		const result = await getLongTerm(requestData);
 		const returnData = await result.json();
 		if(result.status !== 200) {
-			this.setState({ serverError: returnData })
+			this.setState({ serverError: returnData });
 			return;
 		}
+
+		const plotData = {
+			title: this.state.stockSymbol,
+			ydata: { ...returnData.plot_data, prices: returnData.stock_data.prices},
+			xdata: returnData.stock_data.dates
+		}
+
+		this.setState({plotData})
+	}
+
+	formatDate(date) {
+		var month = '' + (date.getMonth() + 1);
+		var day = '' + date.getDate();
+		const year = date.getFullYear();
+		if (month.length < 2) 
+			month = '0' + month;
+		if (day.length < 2) 
+			day = '0' + day;
+		return [year, month, day].join('-');
+	}
+
+	renderPlot() {
+		if (!this.state.plotData) {
+			return null;
+		}
+		return (
+			<Row>
+				<Col md="12">
+					<Card>
+						<CardHeader>
+							<CardTitle tag="h5">Plot</CardTitle>
+							
+						</CardHeader>
+						<CardBody>
+							<Plotter 
+								title={this.state.plotData.title} 
+								xdata={this.state.plotData.xdata} 
+								ydata={this.state.plotData.ydata} 
+							/>
+						</CardBody>
+					</Card>
+				</Col>
+			</Row>
+		);
 	}
 	
-
 	render() {
 		return (
 			<>
@@ -128,20 +178,55 @@ class ChartLongterm extends React.Component {
 							</CardHeader>
 							<CardBody>
 								<form onSubmit={this.formSubmit}>
-									<label>Enter stock's symbol(abbreviation) in 
-									United States stock market</label>
+									<div className="text-center mb-4">
+									<label >
+										<b>Enter stock's symbol(abbreviation) in 
+										United States stock market</b>
+									</label>
 									<input 
 										type="text" 
 										className="form-control" 
 										value={this.state.stockSymbol}
 										onChange={this.handleStockSymbolChange}
 									/>
+									</div>
+
+									<div className="form-group row text-right">
+									<label htmlFor="startDate" className="col-2 col-form-label">
+										Start Date
+									</label>
+										<div className="col-10">
+											<input 
+												className="form-control" 
+												type="date" 
+												name="startDate"
+												id="startDate"
+												value={this.state.startDate}
+												onChange={this.handleInputChange}
+											/>
+										</div>
+									</div>
+
+									<div className="form-group row text-right">
+										<label htmlFor="endDate" className="col-2 col-form-label">
+											End date
+										</label>
+										<div className="col-10">
+											<input 
+												className="form-control" 
+												type="date" 
+												name="endDate"
+												id="endDate"
+												value={this.state.endDate}
+												onChange={this.handleInputChange}
+											/>
+										</div>
+									</div>
 
 									<hr/>
 
 									<p>Select helper plots</p>
 									
-									{/*TODO checkbox inputeille id ja labeleille for tagi*/}
 									<Row>
 				  						<Col md="6">
 											<div className="ml-4 mb-2">
@@ -369,20 +454,7 @@ class ChartLongterm extends React.Component {
 						</Card>
 					</Col>
 				</Row>
-				<Row>
-				  	<Col md="12">
-						<Card>
-							<CardHeader>
-								<CardTitle tag="h5">Select helper plots</CardTitle>
-								<p className="card-category">Get stock's prices with 1 
-								day interval for custom date range.</p>
-							</CardHeader>
-							<CardBody>
-								
-							</CardBody>
-						</Card>
-					</Col>
-				</Row>
+				{this.renderPlot()}
 			</>
 		);
 	}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardHeader, CardBody, CardTitle, Row, Col } from "reactstrap";
 import { getLatestDaily } from '../api/stockdata';
+import Plotter from '../components/Plotter';
 
 class ChartDaily extends React.Component {
 	constructor(props) {
@@ -94,6 +95,9 @@ class ChartDaily extends React.Component {
 					if (!formData.params[key]) {
 					  	delete formData.params[key];
 					}
+					else {
+						formData.params[key] = parseInt(formData.params[key])
+					}
 				}
 				plotOptions.push(formData);
 			}
@@ -109,9 +113,40 @@ class ChartDaily extends React.Component {
 			this.setState({ serverError: returnData })
 			return;
 		}
-		console.log(returnData)
+
+		const plotData = {
+			title: this.state.stockSymbol,
+			ydata: { ...returnData.plot_data, prices: returnData.stock_data.prices},
+			xdata: returnData.stock_data.dates
+		}
+
+		this.setState({plotData})
 	}
-	
+
+	renderPlot() {
+		if (!this.state.plotData) {
+			return null;
+		}
+		return (
+			<Row>
+				<Col md="12">
+					<Card>
+						<CardHeader>
+							<CardTitle tag="h5">Plot</CardTitle>
+							
+						</CardHeader>
+						<CardBody>
+							<Plotter 
+								title={this.state.plotData.title} 
+								xdata={this.state.plotData.xdata} 
+								ydata={this.state.plotData.ydata} 
+							/>
+						</CardBody>
+					</Card>
+				</Col>
+			</Row>
+		);
+	}
 
 	render() {
 		return (
@@ -126,14 +161,18 @@ class ChartDaily extends React.Component {
 							</CardHeader>
 							<CardBody>
 								<form onSubmit={this.formSubmit}>
-									<label>Enter stock's symbol(abbreviation) in 
-									United States stock market</label>
+								<div className="text-center mb-4">
+									<label >
+										<b>Enter stock's symbol(abbreviation) in 
+										United States stock market</b>
+									</label>
 									<input 
 										type="text" 
 										className="form-control" 
 										value={this.state.stockSymbol}
 										onChange={this.handleStockSymbolChange}
 									/>
+									</div>
 
 									<hr/>
 
@@ -366,20 +405,7 @@ class ChartDaily extends React.Component {
 						</Card>
 					</Col>
 				</Row>
-				<Row>
-				  	<Col md="12">
-						<Card>
-							<CardHeader>
-								<CardTitle tag="h5">Select helper plots</CardTitle>
-								<p className="card-category">Get stock's prices with 1 
-								day interval for custom date range.</p>
-							</CardHeader>
-							<CardBody>
-								
-							</CardBody>
-						</Card>
-					</Col>
-				</Row>
+				{this.renderPlot()}
 			</>
 		);
 	}
