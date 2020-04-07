@@ -30,7 +30,8 @@ class ChartLongterm extends React.Component {
 			maxMovingWindow: 10,
 			maxMovingLimit: "",
 			serverError: null,
-			plotData: null
+			plotData: null,
+			loader: false,
 		};
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleStockSymbolChange = this.handleStockSymbolChange.bind(this);
@@ -53,7 +54,7 @@ class ChartLongterm extends React.Component {
 
 	async formSubmit(e) {
 		e.preventDefault();
-		this.setState({ serverError: null })
+		this.setState({ serverError: null, loader: true })
 
 		const formMapper = {
 			"averageCheck": {"name": "average"},
@@ -116,7 +117,7 @@ class ChartLongterm extends React.Component {
 		const result = await getLongTerm(requestData);
 		const returnData = await result.json();
 		if(result.status !== 200) {
-			this.setState({ serverError: returnData });
+			this.setState({ serverError: returnData, loader: false });
 			return;
 		}
 
@@ -126,7 +127,7 @@ class ChartLongterm extends React.Component {
 			xdata: returnData.stock_data.dates
 		}
 
-		this.setState({plotData})
+		this.setState({plotData, loader: false})
 	}
 
 	formatDate(date) {
@@ -141,7 +142,7 @@ class ChartLongterm extends React.Component {
 	}
 
 	renderPlot() {
-		if (!this.state.plotData) {
+		if (!(this.state.plotData || this.state.loader)) {
 			return null;
 		}
 		return (
@@ -153,11 +154,12 @@ class ChartLongterm extends React.Component {
 							
 						</CardHeader>
 						<CardBody>
+							{ (this.state.loader) ? "Loading..." :
 							<Plotter 
 								title={this.state.plotData.title} 
 								xdata={this.state.plotData.xdata} 
 								ydata={this.state.plotData.ydata} 
-							/>
+							/>}
 						</CardBody>
 					</Card>
 				</Col>
