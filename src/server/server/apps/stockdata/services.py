@@ -4,6 +4,7 @@ from requests.exceptions import ConnectionError
 
 from .helpers import DateHelpers
 from .errors import InvalidStockNameError, NoInternetConnectionError
+from server.apps.authentication.models import APIUser
 
 
 class IDataService(abc.ABC):
@@ -27,7 +28,7 @@ class AlphaVantageDataService(IDataService):
 
     def get_latest_daily_data(self, stock):
         # Init alpha vatage client.
-        key = 'fsghehr' #TODO: APIUser.objects.get(user=self.request.user).alpha_vantage_api_key
+        key = APIUser.objects.get(user=self.request.user).alpha_vantage_api_key
         ts = TimeSeries(key)
         
         # Get intraday data from the selected stock
