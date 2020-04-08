@@ -19,7 +19,7 @@ cd src/client
 npm install
 npm run start
 ```
-If server is not running in port 8000 change the port number manually in src/client/settings.js to match the server's port number.
+If server is not running in port 8000 change the port number manually in src/client/src/settings.js to match the server's port number.
 
 ## Site Overview
 Under construction...
