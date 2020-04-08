@@ -1,4 +1,4 @@
-import { API_PATH } from '../../setting';
+import { API_PATH } from '../setting';
 
 const baseURL = `${API_PATH}/api/auth`;
 

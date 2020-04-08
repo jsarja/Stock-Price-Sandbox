@@ -1,5 +1,5 @@
 import { getAuthToken } from '../utils/AuthTokenStore';
-import { API_PATH } from '../../setting';
+import { API_PATH } from '../setting';
 
 const baseURL = `${API_PATH}/api/stock_data/av_api_key`;
 
