@@ -121,6 +121,30 @@ class ChartLongterm extends React.Component {
 			return;
 		}
 
+		if("std" in returnData.plot_data) {
+			returnData.plot_data.std_upper = returnData.plot_data.std
+			.map( (dataPoint, i) => {
+				return !dataPoint ? dataPoint : returnData.stock_data.prices[i] + dataPoint
+			});
+			returnData.plot_data.std_lower = returnData.plot_data.std
+			.map( (dataPoint, i) => {
+				return !dataPoint ? dataPoint : returnData.stock_data.prices[i] - dataPoint
+			});
+			delete returnData.plot_data.std;
+		}
+
+		if("moving_std" in returnData.plot_data) {
+			returnData.plot_data.moving_std_upper = returnData.plot_data.moving_std
+			.map( (dataPoint, i) => {
+				return !dataPoint ? dataPoint : returnData.stock_data.prices[i] + dataPoint
+			});
+			returnData.plot_data.moving_std_lower = returnData.plot_data.moving_std
+			.map( (dataPoint, i) => {
+				return !dataPoint ? dataPoint : returnData.stock_data.prices[i] - dataPoint 
+			});
+			delete returnData.plot_data.moving_std;
+		}
+
 		const plotData = {
 			title: this.state.stockSymbol,
 			ydata: { ...returnData.plot_data, prices: returnData.stock_data.prices},
