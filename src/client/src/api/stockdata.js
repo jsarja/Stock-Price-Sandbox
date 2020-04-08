@@ -1,6 +1,7 @@
 import { getAuthToken } from '../utils/AuthTokenStore';
+import { API_PATH } from '../../setting';
 
-const baseURL = 'http://127.0.0.1:8000/api/stock_data';
+const baseURL = `${API_PATH}/api/stock_data`;
 
 export const getLatestDaily = async (requestData) => {
     const userToken = getAuthToken();
